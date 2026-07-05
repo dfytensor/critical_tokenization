@@ -1,0 +1,32 @@
+{
+  "name": "smoke_curr",
+  "params": 6570570,
+  "V": 2001,
+  "total_steps": 16,
+  "log": [
+    {
+      "step": 4,
+      "phase": "m500",
+      "train_loss": 5.770906448364258,
+      "bpc_full": 3.7798948202941047
+    },
+    {
+      "step": 8,
+      "phase": "m500",
+      "train_loss": 5.163309097290039,
+      "bpc_full": 3.5180021077451564
+    },
+    {
+      "step": 12,
+      "phase": "full",
+      "train_loss": 5.018762588500977,
+      "bpc_full": 3.404605263136333
+    },
+    {
+      "step": 16,
+      "phase": "full",
+      "train_loss": 4.753135681152344,
+      "bpc_full": 3.372206164676669
+    }
+  ]
+}

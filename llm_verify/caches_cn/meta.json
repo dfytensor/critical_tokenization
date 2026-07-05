@@ -1,0 +1,52 @@
+{
+  "byte": {
+    "kind": "byte",
+    "vocab": 257,
+    "cpt": 0.37344255781264235,
+    "alpha": 0.7125462001513136,
+    "hidden": 256,
+    "params": 7494850,
+    "train_tokens": 48615617,
+    "val_tokens": 2677788
+  },
+  "char": {
+    "kind": "char",
+    "vocab": 6574,
+    "cpt": 1.0,
+    "alpha": 1.0463937727221517,
+    "hidden": 224,
+    "params": 8619274,
+    "train_tokens": 18000000,
+    "val_tokens": 1000000
+  },
+  "bpe8000": {
+    "kind": "bpe",
+    "vocab": 8001,
+    "cpt": 1.5029728803573468,
+    "alpha": 0.8550853636130472,
+    "hidden": 192,
+    "params": 7277010,
+    "train_tokens": 11996370,
+    "val_tokens": 665348
+  },
+  "bpe10000": {
+    "kind": "bpe",
+    "vocab": 10001,
+    "cpt": 1.5778744138196552,
+    "alpha": 0.8689397248143854,
+    "hidden": 192,
+    "params": 8045010,
+    "train_tokens": 11414001,
+    "val_tokens": 633764
+  },
+  "bpe12000": {
+    "kind": "bpe",
+    "vocab": 12001,
+    "cpt": 1.6312867753212412,
+    "alpha": 0.881541256538136,
+    "hidden": 192,
+    "params": 8813010,
+    "train_tokens": 11037522,
+    "val_tokens": 613013
+  }
+}

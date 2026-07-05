@@ -1,0 +1,24 @@
+# Binary token caches (regenerable: python build_caches.py / n_sweep etc.)
+*.pt
+
+# Cached corpora (regenerable: corpus.py / fetch_corpus.py)
+corpus_cache/
+llm_verify/corpus_cache/
+en_large.txt
+en_done.txt
+*.txt.cache
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs
+*.log
+*.err
+*.pid
+
+# Trained weights / checkpoints
+*.pth
+*.bin
+*.safetensors

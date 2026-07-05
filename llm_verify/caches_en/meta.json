@@ -1,0 +1,52 @@
+{
+  "char": {
+    "kind": "char",
+    "vocab": 155,
+    "cpt": 1.0,
+    "alpha": 0.9388061414078249,
+    "hidden": 256,
+    "params": 7442626,
+    "train_tokens": 18000000,
+    "val_tokens": 1000000
+  },
+  "bpe500": {
+    "kind": "bpe",
+    "vocab": 501,
+    "cpt": 1.7529989429416375,
+    "alpha": 0.9137000865450882,
+    "hidden": 256,
+    "params": 7619778,
+    "train_tokens": 10129179,
+    "val_tokens": 570451
+  },
+  "bpe1500": {
+    "kind": "bpe",
+    "vocab": 1501,
+    "cpt": 1.9984811543227148,
+    "alpha": 0.9978175454029924,
+    "hidden": 256,
+    "params": 8131778,
+    "train_tokens": 8813030,
+    "val_tokens": 500380
+  },
+  "bpe3000": {
+    "kind": "bpe",
+    "vocab": 3001,
+    "cpt": 2.117056275589918,
+    "alpha": 1.0570140476218925,
+    "hidden": 256,
+    "params": 8899778,
+    "train_tokens": 8239887,
+    "val_tokens": 472354
+  },
+  "bpe6000": {
+    "kind": "bpe",
+    "vocab": 6001,
+    "cpt": 2.2200515051949203,
+    "alpha": 1.0932580360290316,
+    "hidden": 224,
+    "params": 8362570,
+    "train_tokens": 7798599,
+    "val_tokens": 450440
+  }
+}

@@ -13,6 +13,7 @@ import glob
 import torch
 import torch.nn.functional as F
 
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 sys.path.insert(0, r"F:\OpenASH2605\critical_tokenization\llm_verify")
 import common as C
 from frsmash_v36 import FRSMASHv36
@@ -21,9 +22,11 @@ OUT = os.path.join(C.WORK, "big_n_sweep")
 os.makedirs(OUT, exist_ok=True)
 DEV = "cuda"
 SEQ = 512
-BATCH = 32
-STEPS = 250
-EVAL_EVERY = 250
+MICRO = 4
+ACCUM = 8
+BATCH = MICRO * ACCUM
+STEPS = 600
+EVAL_EVERY = 300
 LAYERS = 8
 HEADS = 8
 LR = 5e-4
@@ -55,8 +58,8 @@ def eval_bpc(model, val_ids, cpt, V):
     n = len(val_ids)
     starts = list(range(0, n - SEQ - 1, SEQ))[:384]
     tl = tt = 0
-    for i in range(0, len(starts), 64):
-        idxs = starts[i:i + 64]
+    for i in range(0, len(starts), 16):
+        idxs = starts[i:i + 16]
         seqs = torch.stack([val_ids[s:s + SEQ + 1] for s in idxs])
         x = seqs[:, :-1].long().to(DEV)
         y = seqs[:, 1:].long().to(DEV)
@@ -82,21 +85,23 @@ def run_one(tag, V, H, nparams, cpt, train_cpu, val_cpu):
         cur = LR * (0.1 + 0.45 * (1 + math.cos(math.pi * step / STEPS)))
         for pg in opt.param_groups:
             pg["lr"] = cur
-        starts = torch.randint(0, len(ids) - SEQ - 1, (BATCH,))
-        seqs = torch.stack([ids[s:s + SEQ + 1] for s in starts])
-        x, y = seqs[:, :-1].long(), seqs[:, 1:].long()
-        with torch.amp.autocast("cuda", dtype=torch.bfloat16):
-            o = model(x)
-            loss = F.cross_entropy(o.reshape(-1, V), y.reshape(-1))
         opt.zero_grad(set_to_none=True)
-        loss.backward()
+        for _ in range(ACCUM):
+            starts = torch.randint(0, len(ids) - SEQ - 1, (MICRO,))
+            seqs = torch.stack([ids[s:s + SEQ + 1] for s in starts])
+            x, y = seqs[:, :-1].long(), seqs[:, 1:].long()
+            with torch.amp.autocast("cuda", dtype=torch.bfloat16):
+                o = model(x)
+                loss = F.cross_entropy(o.reshape(-1, V), y.reshape(-1)) / ACCUM
+            loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         opt.step()
         if step % 50 == 0:
             torch.cuda.empty_cache()
         if step % EVAL_EVERY == 0 or step == STEPS:
+            torch.cuda.empty_cache()
             last_bpc = eval_bpc(model, val_cpu, cpt, V)
-            print(f"    {tag} s{step}/{STEPS} loss={loss.item():.3f} bpc={last_bpc:.4f} ({time.time()-t0:.0f}s)", flush=True)
+            print(f"    {tag} s{step}/{STEPS} loss={loss.item()*ACCUM:.3f} bpc={last_bpc:.4f} ({time.time()-t0:.0f}s)", flush=True)
     rec = dict(tag=tag, V=V, H=H, params=nparams, cpt=cpt, final_bpc=last_bpc)
     json.dump(rec, open(path, "w"), indent=2)
     del model, ids
